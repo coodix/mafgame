@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mafia Tournament Ratings</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-size: 13px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 12px 16px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+        .stats-summary {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 16px;
+            background: #f8f9fa;
+            font-size: 11px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            line-height: 1.2;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            margin-top: 2px;
+        }
+        .table-container {
+            padding: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        th {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            font-weight: 600;
+            padding: 6px 8px;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        th:first-child {
+            text-align: center;
+            width: 30px;
+        }
+        th:nth-child(3), th:nth-child(4), th:nth-child(5), th:nth-child(6) {
+            text-align: right;
+        }
+        td {
+            padding: 4px 8px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        tr:nth-child(even) {
+            background-color: #fdfdfd;
+        }
+        .rank {
+            text-align: center;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 11px;
+        }
+        .rank.top3 {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .player-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .rating {
+            font-weight: bold;
+            color: #27ae60;
+            text-align: right;
+        }
+        .wins {
+            text-align: right;
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        .points {
+            text-align: right;
+            color: #8e44ad;
+            font-weight: 500;
+        }
+        .ci-bonus {
+            text-align: right;
+            color: #f39c12;
+            font-weight: 500;
+        }
+        .footer {
+            background: #ecf0f1;
+            padding: 6px 12px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Mafia Tournament Ratings - Player Tracker</h1>
+        </div>
+        
+        <div class="stats-summary">
+            <div class="stat-item">
+                <div class="stat-value">33</div>
+                <div class="stat-label">Players</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Games</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">4.5</div>
+                <div class="stat-label">Avg Rating</div>
+            </div>
+        </div>
+        
+        <div class="tracked-players-summary">
+            <h3 style="margin: 8px 16px; color: #2980b9; font-size: 14px;">👥 Tracked Players</h3>
+            <div style="padding: 0 16px 8px; display: flex; flex-wrap: wrap; gap: 8px;">
+                <div style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                    <strong>#1 Nick</strong><br>
+                    <span style="color: #27ae60;">7.95pts</span> 
+                    <span style="color: #7f8c8d;">(7/12)</span>
+                </div>
+                <div style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                    <strong>#6 Blessed</strong><br>
+                    <span style="color: #27ae60;">6.25pts</span> 
+                    <span style="color: #7f8c8d;">(6/12)</span>
+                </div>
+                <div style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                    <strong>#7 Грешник</strong><br>
+                    <span style="color: #27ae60;">5.55pts</span> 
+                    <span style="color: #7f8c8d;">(5/12)</span>
+                </div>
+                <div style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                    <strong>#14 Urs</strong><br>
+                    <span style="color: #27ae60;">4.65pts</span> 
+                    <span style="color: #7f8c8d;">(6/12)</span>
+                </div>
+                <div style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
+                    <strong>#26 Ramos</strong><br>
+                    <span style="color: #27ae60;">3.35pts</span> 
+                    <span style="color: #7f8c8d;">(5/12)</span>
+                </div>
+            </div>
+        </div><div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Player</th>
+                        <th>Rating</th>
+                        <th>Wins</th>
+                        <th>Add Pts</th>
+                        <th>CI</th>
+                    </tr>
+                </thead>
+                <tbody>
+        
+                    <tr>
+                        <td><div class="rank top3">1</div></td>
+                        <td class="player-name">Nick</td>
+                        <td class="rating">7.950</td>
+                        <td class="wins">7</td>
+                        <td class="points">7.650</td>
+                        <td class="ci-bonus">0.300</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank top3">2</div></td>
+                        <td class="player-name">Гелиус</td>
+                        <td class="rating">7.400</td>
+                        <td class="wins">7</td>
+                        <td class="points">7.400</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank top3">3</div></td>
+                        <td class="player-name">Korolevich</td>
+                        <td class="rating">7.350</td>
+                        <td class="wins">8</td>
+                        <td class="points">7.350</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">4</div></td>
+                        <td class="player-name">Bard</td>
+                        <td class="rating">7.350</td>
+                        <td class="wins">7</td>
+                        <td class="points">7.350</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">5</div></td>
+                        <td class="player-name">KyKyCuk</td>
+                        <td class="rating">6.600</td>
+                        <td class="wins">8</td>
+                        <td class="points">6.600</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">6</div></td>
+                        <td class="player-name">Blessed</td>
+                        <td class="rating">6.250</td>
+                        <td class="wins">6</td>
+                        <td class="points">6.150</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">7</div></td>
+                        <td class="player-name">Грешник</td>
+                        <td class="rating">5.550</td>
+                        <td class="wins">5</td>
+                        <td class="points">4.950</td>
+                        <td class="ci-bonus">0.600</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">8</div></td>
+                        <td class="player-name">Wez</td>
+                        <td class="rating">5.500</td>
+                        <td class="wins">7</td>
+                        <td class="points">5.500</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">9</div></td>
+                        <td class="player-name">Саботаж</td>
+                        <td class="rating">5.400</td>
+                        <td class="wins">5</td>
+                        <td class="points">5.300</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">10</div></td>
+                        <td class="player-name">Suroviy</td>
+                        <td class="rating">5.250</td>
+                        <td class="wins">5</td>
+                        <td class="points">5.050</td>
+                        <td class="ci-bonus">0.200</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">11</div></td>
+                        <td class="player-name">Весная</td>
+                        <td class="rating">5.250</td>
+                        <td class="wins">6</td>
+                        <td class="points">4.850</td>
+                        <td class="ci-bonus">0.400</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">12</div></td>
+                        <td class="player-name">FoxArt</td>
+                        <td class="rating">5.100</td>
+                        <td class="wins">6</td>
+                        <td class="points">5.100</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">13</div></td>
+                        <td class="player-name">GreK</td>
+                        <td class="rating">4.650</td>
+                        <td class="wins">4</td>
+                        <td class="points">4.250</td>
+                        <td class="ci-bonus">0.400</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">14</div></td>
+                        <td class="player-name">Urs</td>
+                        <td class="rating">4.650</td>
+                        <td class="wins">6</td>
+                        <td class="points">4.550</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">15</div></td>
+                        <td class="player-name">Свет</td>
+                        <td class="rating">4.650</td>
+                        <td class="wins">4</td>
+                        <td class="points">4.550</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">16</div></td>
+                        <td class="player-name">Mariposa</td>
+                        <td class="rating">4.400</td>
+                        <td class="wins">4</td>
+                        <td class="points">4.300</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">17</div></td>
+                        <td class="player-name">Al Capone</td>
+                        <td class="rating">4.300</td>
+                        <td class="wins">5</td>
+                        <td class="points">4.300</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">18</div></td>
+                        <td class="player-name">Dakota</td>
+                        <td class="rating">3.900</td>
+                        <td class="wins">5</td>
+                        <td class="points">3.800</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">19</div></td>
+                        <td class="player-name">S1LveR</td>
+                        <td class="rating">3.800</td>
+                        <td class="wins">5</td>
+                        <td class="points">3.800</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">20</div></td>
+                        <td class="player-name">Goldy</td>
+                        <td class="rating">3.700</td>
+                        <td class="wins">5</td>
+                        <td class="points">3.600</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">21</div></td>
+                        <td class="player-name">Driver</td>
+                        <td class="rating">3.700</td>
+                        <td class="wins">5</td>
+                        <td class="points">3.700</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">22</div></td>
+                        <td class="player-name">Журавль</td>
+                        <td class="rating">3.650</td>
+                        <td class="wins">3</td>
+                        <td class="points">3.450</td>
+                        <td class="ci-bonus">0.200</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">23</div></td>
+                        <td class="player-name">Бабушка Хлоя</td>
+                        <td class="rating">3.550</td>
+                        <td class="wins">6</td>
+                        <td class="points">3.550</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">24</div></td>
+                        <td class="player-name">Руанда</td>
+                        <td class="rating">3.350</td>
+                        <td class="wins">4</td>
+                        <td class="points">3.250</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">25</div></td>
+                        <td class="player-name">Freeman</td>
+                        <td class="rating">3.350</td>
+                        <td class="wins">4</td>
+                        <td class="points">3.350</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">26</div></td>
+                        <td class="player-name">Ramos</td>
+                        <td class="rating">3.350</td>
+                        <td class="wins">5</td>
+                        <td class="points">3.350</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">27</div></td>
+                        <td class="player-name">Foxy</td>
+                        <td class="rating">3.250</td>
+                        <td class="wins">4</td>
+                        <td class="points">3.150</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">28</div></td>
+                        <td class="player-name">Беатрис</td>
+                        <td class="rating">2.750</td>
+                        <td class="wins">4</td>
+                        <td class="points">2.750</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">29</div></td>
+                        <td class="player-name">Olgierd</td>
+                        <td class="rating">2.650</td>
+                        <td class="wins">4</td>
+                        <td class="points">2.650</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">30</div></td>
+                        <td class="player-name">KRASNII</td>
+                        <td class="rating">2.450</td>
+                        <td class="wins">4</td>
+                        <td class="points">2.450</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">31</div></td>
+                        <td class="player-name">КОН</td>
+                        <td class="rating">2.400</td>
+                        <td class="wins">2</td>
+                        <td class="points">2.300</td>
+                        <td class="ci-bonus">0.100</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">32</div></td>
+                        <td class="player-name">Stalker</td>
+                        <td class="rating">2.100</td>
+                        <td class="wins">2</td>
+                        <td class="points">2.100</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                    <tr>
+                        <td><div class="rank">33</div></td>
+                        <td class="player-name">Vivа</td>
+                        <td class="rating">1.800</td>
+                        <td class="wins">2</td>
+                        <td class="points">1.800</td>
+                        <td class="ci-bonus">0.000</td>
+                    </tr>
+            
+                </tbody>
+            </table>
+        </div>
+        <div class="footer">
+            <p>Generated on 2025-08-03 16:25:53 | 🤖 Powered by MafTournamentCalculator</p>
+            <p>Rating Formula: Win Points (0.75 × wins) + Additional Points + CI Bonus</p>
+        </div>
+    </div>
+</body>
+</html>
+        
