@@ -33,8 +33,10 @@
 
 		.grid {
 			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 			gap: 14px;
+			max-width: 1600px;
+			margin: 0 auto;
 		}
 
 		.stream-wrapper {
@@ -125,6 +127,12 @@
 			margin-top: 120px;
 			color: #bbb;
 		}
+
+		@media (max-width: 1024px) {
+			.grid {
+				grid-template-columns: 1fr;
+			}
+		}
 	</style>
 </head>
 <body>
@@ -137,7 +145,7 @@
 	<div class="container">
 		<div class="meta">
 			<span>Всего стримов: <strong id="streamCount">8</strong></span>
-			<span>Обновлено: 2025-11-23 14:51</span>
+			<span>Обновлено: 2025-11-23 14:57</span>
 		</div>
 		<div id="streamsContainer" class="grid"></div>
 		<div class="empty-state" id="emptyState" style="display: none;">
@@ -146,7 +154,7 @@
 	</div>
 
 	<script>
-		const streamData = [{"videoId":"3_RNkdisMJw","title":"Four Seasons: Moldova. Autumn День 2 Стол 1","description":"Four Seasons: Moldova. Autumn День 2 Стол 1 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:04:01Z","thumbnailUrl":"https://i.ytimg.com/vi/3_RNkdisMJw/default_live.jpg","viewCount":"153","url":"https://www.youtube.com/watch?v=3_RNkdisMJw"},{"videoId":"ycAxmDUPelg","title":"Four Seasons: Moldova. Autumn День 2 Стол 3","description":"Four Seasons: Moldova. Autumn День 2 Стол 3 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:05:45Z","thumbnailUrl":"https://i.ytimg.com/vi/ycAxmDUPelg/default_live.jpg","viewCount":"114","url":"https://www.youtube.com/watch?v=ycAxmDUPelg"},{"videoId":"_MCf-WIU6rc","title":"Mafia Champions League 2025 Europe Final. Day 2","description":"Mafia Champions League 2025 Europe Final. Day 2 https://www.instagram.com/mafiamcl/ ...","channelTitle":"MAFGAME","publishedAt":"2025-11-21T16:12:39Z","thumbnailUrl":"https://i.ytimg.com/vi/_MCf-WIU6rc/default_live.jpg","viewCount":"74","url":"https://www.youtube.com/watch?v=_MCf-WIU6rc"},{"videoId":"rlebPAPC31A","title":"Four Seasons: Moldova. Autumn День 2 Стол 4","description":"Four Seasons: Moldova. Autumn День 2 Стол 4 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:06:56Z","thumbnailUrl":"https://i.ytimg.com/vi/rlebPAPC31A/default_live.jpg","viewCount":"171","url":"https://www.youtube.com/watch?v=rlebPAPC31A"},{"videoId":"rOqY68QonPw","title":"Four Seasons: Moldova. Autumn День 2 Стол 2","description":"Four Seasons: Moldova. Autumn День 2 Стол 2 #mafgame #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:04:54Z","thumbnailUrl":"https://i.ytimg.com/vi/rOqY68QonPw/default_live.jpg","viewCount":"124","url":"https://www.youtube.com/watch?v=rOqY68QonPw"},{"videoId":"NbcnCr9ibmM","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 2","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 2.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:17:00Z","thumbnailUrl":"https://i.ytimg.com/vi/NbcnCr9ibmM/default_live.jpg","viewCount":"92","url":"https://www.youtube.com/watch?v=NbcnCr9ibmM"},{"videoId":"MYneUouB6MU","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 1","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 1.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:16:14Z","thumbnailUrl":"https://i.ytimg.com/vi/MYneUouB6MU/default_live.jpg","viewCount":"84","url":"https://www.youtube.com/watch?v=MYneUouB6MU"},{"videoId":"MTEVy3_bgmI","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 3","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 3.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:17:41Z","thumbnailUrl":"https://i.ytimg.com/vi/MTEVy3_bgmI/default_live.jpg","viewCount":"89","url":"https://www.youtube.com/watch?v=MTEVy3_bgmI"}];
+		const streamData = [{"videoId":"3_RNkdisMJw","title":"Four Seasons: Moldova. Autumn День 2 Стол 1","description":"Four Seasons: Moldova. Autumn День 2 Стол 1 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:04:01Z","thumbnailUrl":"https://i.ytimg.com/vi/3_RNkdisMJw/default_live.jpg","viewCount":"156","url":"https://www.youtube.com/watch?v=3_RNkdisMJw"},{"videoId":"rOqY68QonPw","title":"Four Seasons: Moldova. Autumn День 2 Стол 2","description":"Four Seasons: Moldova. Autumn День 2 Стол 2 #mafgame #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:04:54Z","thumbnailUrl":"https://i.ytimg.com/vi/rOqY68QonPw/default_live.jpg","viewCount":"128","url":"https://www.youtube.com/watch?v=rOqY68QonPw"},{"videoId":"ycAxmDUPelg","title":"Four Seasons: Moldova. Autumn День 2 Стол 3","description":"Four Seasons: Moldova. Autumn День 2 Стол 3 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:05:45Z","thumbnailUrl":"https://i.ytimg.com/vi/ycAxmDUPelg/default_live.jpg","viewCount":"116","url":"https://www.youtube.com/watch?v=ycAxmDUPelg"},{"videoId":"rlebPAPC31A","title":"Four Seasons: Moldova. Autumn День 2 Стол 4","description":"Four Seasons: Moldova. Autumn День 2 Стол 4 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:06:56Z","thumbnailUrl":"https://i.ytimg.com/vi/rlebPAPC31A/default_live.jpg","viewCount":"180","url":"https://www.youtube.com/watch?v=rlebPAPC31A"},{"videoId":"MYneUouB6MU","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 1","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 1.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:16:14Z","thumbnailUrl":"https://i.ytimg.com/vi/MYneUouB6MU/default_live.jpg","viewCount":"87","url":"https://www.youtube.com/watch?v=MYneUouB6MU"},{"videoId":"NbcnCr9ibmM","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 2","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 2.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:17:00Z","thumbnailUrl":"https://i.ytimg.com/vi/NbcnCr9ibmM/default_live.jpg","viewCount":"94","url":"https://www.youtube.com/watch?v=NbcnCr9ibmM"},{"videoId":"MTEVy3_bgmI","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 3","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 3.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:17:41Z","thumbnailUrl":"https://i.ytimg.com/vi/MTEVy3_bgmI/default_live.jpg","viewCount":"90","url":"https://www.youtube.com/watch?v=MTEVy3_bgmI"},{"videoId":"_MCf-WIU6rc","title":"Mafia Champions League 2025 Europe Final. Day 2","description":"Mafia Champions League 2025 Europe Final. Day 2 https://www.instagram.com/mafiamcl/ ...","channelTitle":"MAFGAME","publishedAt":"2025-11-21T16:12:39Z","thumbnailUrl":"https://i.ytimg.com/vi/_MCf-WIU6rc/default_live.jpg","viewCount":"80","url":"https://www.youtube.com/watch?v=_MCf-WIU6rc"}];
 		const players = [];
 		let playersReady = 0;
 		let allPlayersReady = false;
