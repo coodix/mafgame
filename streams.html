@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>YouTube Live Streams - Параллельный просмотр</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+			background: #0f0f0f;
+			color: #fff;
+			overflow-x: hidden;
+		}
+
+		.container {
+			min-height: 100vh;
+			padding: 80px 20px 20px;
+		}
+
+		.meta {
+			display: flex;
+			gap: 15px;
+			font-size: 12px;
+			color: #aaa;
+			margin-bottom: 15px;
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			gap: 14px;
+		}
+
+		.stream-wrapper {
+			display: flex;
+			flex-direction: column;
+			background: #000;
+			border-radius: 8px;
+			overflow: hidden;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+		}
+
+		.stream-title {
+			padding: 10px 15px;
+			background: #1a1a1a;
+			font-size: 14px;
+			font-weight: 500;
+			border-bottom: 1px solid #2a2a2a;
+		}
+
+		.stream-container {
+			position: relative;
+			width: 100%;
+			padding-bottom: 56.25%;
+			height: 0;
+			overflow: hidden;
+		}
+
+		.stream-container iframe,
+		.stream-container > div {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+
+		.controls {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			z-index: 1000;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.btn {
+			padding: 8px 16px;
+			background: #ff0000;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 12px;
+			font-weight: 500;
+			transition: background 0.2s;
+		}
+
+		.btn:hover {
+			background: #cc0000;
+		}
+
+		.btn-primary {
+			background: #00ff00;
+			font-size: 14px;
+			padding: 10px 20px;
+		}
+
+		.btn-primary:hover {
+			background: #00cc00;
+		}
+
+		.status {
+			position: fixed;
+			top: 70px;
+			right: 20px;
+			z-index: 1000;
+			background: rgba(0, 0, 0, 0.8);
+			padding: 10px 15px;
+			border-radius: 4px;
+			font-size: 12px;
+			display: none;
+		}
+
+		.empty-state {
+			text-align: center;
+			margin-top: 120px;
+			color: #bbb;
+		}
+	</style>
+</head>
+<body>
+	<div class="controls">
+		<button class="btn btn-primary" onclick="playAllStreams()" id="playBtn">▶ Запустить все стримы</button>
+		<button class="btn" onclick="toggleFullscreen(document.querySelector('.stream-wrapper'))">Полный экран активного</button>
+	</div>
+	<div class="status" id="status"></div>
+
+	<div class="container">
+		<div class="meta">
+			<span>Всего стримов: <strong id="streamCount">8</strong></span>
+			<span>Обновлено: 2025-11-23 14:51</span>
+		</div>
+		<div id="streamsContainer" class="grid"></div>
+		<div class="empty-state" id="emptyState" style="display: none;">
+			Прямые эфиры не найдены.
+		</div>
+	</div>
+
+	<script>
+		const streamData = [{"videoId":"3_RNkdisMJw","title":"Four Seasons: Moldova. Autumn День 2 Стол 1","description":"Four Seasons: Moldova. Autumn День 2 Стол 1 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:04:01Z","thumbnailUrl":"https://i.ytimg.com/vi/3_RNkdisMJw/default_live.jpg","viewCount":"153","url":"https://www.youtube.com/watch?v=3_RNkdisMJw"},{"videoId":"ycAxmDUPelg","title":"Four Seasons: Moldova. Autumn День 2 Стол 3","description":"Four Seasons: Moldova. Autumn День 2 Стол 3 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:05:45Z","thumbnailUrl":"https://i.ytimg.com/vi/ycAxmDUPelg/default_live.jpg","viewCount":"114","url":"https://www.youtube.com/watch?v=ycAxmDUPelg"},{"videoId":"_MCf-WIU6rc","title":"Mafia Champions League 2025 Europe Final. Day 2","description":"Mafia Champions League 2025 Europe Final. Day 2 https://www.instagram.com/mafiamcl/ ...","channelTitle":"MAFGAME","publishedAt":"2025-11-21T16:12:39Z","thumbnailUrl":"https://i.ytimg.com/vi/_MCf-WIU6rc/default_live.jpg","viewCount":"74","url":"https://www.youtube.com/watch?v=_MCf-WIU6rc"},{"videoId":"rlebPAPC31A","title":"Four Seasons: Moldova. Autumn День 2 Стол 4","description":"Four Seasons: Moldova. Autumn День 2 Стол 4 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:06:56Z","thumbnailUrl":"https://i.ytimg.com/vi/rlebPAPC31A/default_live.jpg","viewCount":"171","url":"https://www.youtube.com/watch?v=rlebPAPC31A"},{"videoId":"rOqY68QonPw","title":"Four Seasons: Moldova. Autumn День 2 Стол 2","description":"Four Seasons: Moldova. Autumn День 2 Стол 2 #mafgame #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:04:54Z","thumbnailUrl":"https://i.ytimg.com/vi/rOqY68QonPw/default_live.jpg","viewCount":"124","url":"https://www.youtube.com/watch?v=rOqY68QonPw"},{"videoId":"NbcnCr9ibmM","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 2","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 2.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:17:00Z","thumbnailUrl":"https://i.ytimg.com/vi/NbcnCr9ibmM/default_live.jpg","viewCount":"92","url":"https://www.youtube.com/watch?v=NbcnCr9ibmM"},{"videoId":"MYneUouB6MU","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 1","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 1.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:16:14Z","thumbnailUrl":"https://i.ytimg.com/vi/MYneUouB6MU/default_live.jpg","viewCount":"84","url":"https://www.youtube.com/watch?v=MYneUouB6MU"},{"videoId":"MTEVy3_bgmI","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 3","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 3.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:17:41Z","thumbnailUrl":"https://i.ytimg.com/vi/MTEVy3_bgmI/default_live.jpg","viewCount":"89","url":"https://www.youtube.com/watch?v=MTEVy3_bgmI"}];
+		const players = [];
+		let playersReady = 0;
+		let allPlayersReady = false;
+		const totalPlayers = streamData.length;
+
+		document.addEventListener('DOMContentLoaded', initPage);
+
+		function initPage() {
+			if (!totalPlayers) {
+				document.getElementById('emptyState').style.display = 'block';
+				document.getElementById('playBtn').style.display = 'none';
+				return;
+			}
+
+			const container = document.getElementById('streamsContainer');
+			streamData.forEach((stream, index) => {
+				const wrapper = document.createElement('div');
+				wrapper.className = 'stream-wrapper';
+
+				const title = document.createElement('div');
+				title.className = 'stream-title';
+				title.textContent = stream.channelTitle + ' — ' + stream.title;
+
+				const streamContainer = document.createElement('div');
+				streamContainer.className = 'stream-container';
+
+				const playerHost = document.createElement('div');
+				playerHost.id = 'player' + (index + 1);
+
+				streamContainer.appendChild(playerHost);
+				wrapper.appendChild(title);
+				wrapper.appendChild(streamContainer);
+				container.appendChild(wrapper);
+			});
+		}
+
+		function onYouTubeIframeAPIReady() {
+			if (!totalPlayers) {
+				return;
+			}
+			showStatus('Инициализация проигрывателей...');
+
+			streamData.forEach((stream, index) => {
+				players[index] = new YT.Player('player' + (index + 1), {
+					videoId: stream.videoId,
+					playerVars: {
+						'autoplay': 1,
+						'mute': 1,
+						'controls': 1,
+						'rel': 0,
+						'modestbranding': 1,
+						'playsinline': 1,
+						'enablejsapi': 1,
+						'origin': window.location.origin
+					},
+					events: {
+						'onReady': onPlayerReady,
+						'onStateChange': onPlayerStateChange
+					}
+				});
+			});
+		}
+
+		function onPlayerReady() {
+			playersReady++;
+			showStatus('Готово проигрывателей: ' + playersReady + '/' + totalPlayers);
+
+			if (playersReady === totalPlayers) {
+				allPlayersReady = true;
+				showStatus('Все проигрыватели готовы!');
+				setTimeout(tryAutoPlay, 1000);
+			}
+		}
+
+		function tryAutoPlay() {
+			if (!allPlayersReady) {
+				return;
+			}
+
+			let started = 0;
+			let maxDelay = 0;
+
+			players.forEach((player, index) => {
+				const delay = Math.floor(Math.random() * 4000) + 1000;
+				maxDelay = Math.max(maxDelay, delay);
+
+				setTimeout(() => {
+					try {
+						if (player && typeof player.playVideo === 'function') {
+							player.playVideo();
+							started++;
+							showStatus('Запускается стрим ' + (index + 1) + '... (' + started + '/' + totalPlayers + ')');
+						}
+					} catch (e) {
+						console.log('Не удалось запустить стрим ' + (index + 1) + ':', e);
+					}
+				}, delay);
+			});
+
+			setTimeout(() => {
+				if (started > 0) {
+					showStatus('Запущено стримов: ' + started + '/' + totalPlayers);
+					unmuteAll();
+				} else {
+					showStatus('Автозапуск заблокирован. Нажмите кнопку "Запустить все стримы"');
+				}
+			}, maxDelay + 2000);
+		}
+
+		function unmuteAll() {
+			players.forEach((player, index) => {
+				try {
+					if (player && typeof player.unMute === 'function') {
+						player.unMute();
+					}
+				} catch (e) {
+					console.log('Не удалось включить звук на стриме ' + (index + 1) + ':', e);
+				}
+			});
+			showStatus('Звук включен');
+			setTimeout(hideStatus, 2000);
+		}
+
+		function playAllStreams() {
+			if (!allPlayersReady) {
+				showStatus('Проигрыватели еще не готовы. Подождите...');
+				return;
+			}
+
+			showStatus('Запуск всех стримов...');
+
+			let started = 0;
+			let maxDelay = 0;
+
+			players.forEach((player, index) => {
+				const delay = Math.floor(Math.random() * 4000) + 1000;
+				maxDelay = Math.max(maxDelay, delay);
+
+				setTimeout(() => {
+					try {
+						if (player && typeof player.playVideo === 'function') {
+							player.playVideo();
+							started++;
+							showStatus('Запускается стрим ' + (index + 1) + '... (' + started + '/' + totalPlayers + ')');
+						}
+					} catch (e) {
+						console.log('Не удалось запустить стрим ' + (index + 1) + ':', e);
+					}
+				}, delay);
+			});
+
+			setTimeout(() => {
+				if (started > 0) {
+					showStatus('Запущено стримов: ' + started + '/' + totalPlayers);
+					unmuteAll();
+				}
+			}, maxDelay + 2000);
+
+			const playBtn = document.getElementById('playBtn');
+			if (playBtn) {
+				playBtn.style.display = 'none';
+			}
+		}
+
+		function onPlayerStateChange(event) {
+			if (event.data === YT.PlayerState.PLAYING) {
+				console.log('Стрим воспроизводится');
+			}
+		}
+
+		function showStatus(message) {
+			const status = document.getElementById('status');
+			if (status) {
+				status.textContent = message;
+				status.style.display = 'block';
+			}
+		}
+
+		function hideStatus() {
+			const status = document.getElementById('status');
+			if (status) {
+				status.style.display = 'none';
+			}
+		}
+
+		let userInteracted = false;
+		document.addEventListener('click', () => {
+			if (!userInteracted && allPlayersReady) {
+				userInteracted = true;
+				setTimeout(tryAutoPlay, 100);
+			}
+		}, { once: true });
+
+		function toggleFullscreen(element) {
+			if (!element) {
+				return;
+			}
+
+			if (!document.fullscreenElement) {
+				element.requestFullscreen().catch(err => {
+					alert('Ошибка при переходе в полноэкранный режим: ' + err.message);
+				});
+			} else {
+				document.exitFullscreen();
+			}
+		}
+
+		document.addEventListener('fullscreenchange', () => {
+			if (!document.fullscreenElement) {
+				showStatus('Полноэкранный режим выключен');
+				setTimeout(hideStatus, 1500);
+			}
+		});
+	</script>
+	<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
