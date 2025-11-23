@@ -1,563 +1,366 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mafia Tournament Ratings</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 8px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-size: 13px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 12px 16px;
-            text-align: center;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 1.4em;
-            font-weight: 600;
-        }
-        .stats-summary {
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 16px;
-            background: #f8f9fa;
-            font-size: 11px;
-        }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #2c3e50;
-            line-height: 1.2;
-        }
-        .stat-label {
-            color: #7f8c8d;
-            margin-top: 2px;
-        }
-        .table-container {
-            padding: 12px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        th {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-            font-weight: 600;
-            padding: 6px 8px;
-            text-align: left;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-        th:first-child {
-            text-align: center;
-            width: 30px;
-        }
-        th:nth-child(3), th:nth-child(4), th:nth-child(5), th:nth-child(6) {
-            text-align: right;
-        }
-        td {
-            padding: 4px 8px;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 12px;
-            line-height: 1.3;
-        }
-        tr:hover {
-            background-color: #f8f9fa;
-        }
-        tr:nth-child(even) {
-            background-color: #fdfdfd;
-        }
-        .rank {
-            text-align: center;
-            font-weight: bold;
-            color: #2c3e50;
-            font-size: 11px;
-        }
-        .rank.top3 {
-            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-        }
-        .player-name {
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        .rating {
-            font-weight: bold;
-            color: #27ae60;
-            text-align: right;
-        }
-        .wins {
-            text-align: right;
-            color: #e74c3c;
-            font-weight: 600;
-        }
-        .points {
-            text-align: right;
-            color: #8e44ad;
-            font-weight: 500;
-        }
-        .ci-bonus {
-            text-align: right;
-            color: #f39c12;
-            font-weight: 500;
-        }
-        .footer {
-            background: #ecf0f1;
-            padding: 6px 12px;
-            text-align: center;
-            color: #7f8c8d;
-            font-size: 10px;
-        }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>YouTube Live Streams - Параллельный просмотр</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+			background: #0f0f0f;
+			color: #fff;
+			overflow-x: hidden;
+		}
+
+		.container {
+			min-height: 100vh;
+			padding: 80px 20px 20px;
+		}
+
+		.meta {
+			display: flex;
+			gap: 15px;
+			font-size: 12px;
+			color: #aaa;
+			margin-bottom: 15px;
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			gap: 14px;
+		}
+
+		.stream-wrapper {
+			display: flex;
+			flex-direction: column;
+			background: #000;
+			border-radius: 8px;
+			overflow: hidden;
+			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+		}
+
+		.stream-title {
+			padding: 10px 15px;
+			background: #1a1a1a;
+			font-size: 14px;
+			font-weight: 500;
+			border-bottom: 1px solid #2a2a2a;
+		}
+
+		.stream-container {
+			position: relative;
+			width: 100%;
+			padding-bottom: 56.25%;
+			height: 0;
+			overflow: hidden;
+		}
+
+		.stream-container iframe,
+		.stream-container > div {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+
+		.controls {
+			position: fixed;
+			top: 20px;
+			right: 20px;
+			z-index: 1000;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.btn {
+			padding: 8px 16px;
+			background: #ff0000;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 12px;
+			font-weight: 500;
+			transition: background 0.2s;
+		}
+
+		.btn:hover {
+			background: #cc0000;
+		}
+
+		.btn-primary {
+			background: #00ff00;
+			font-size: 14px;
+			padding: 10px 20px;
+		}
+
+		.btn-primary:hover {
+			background: #00cc00;
+		}
+
+		.status {
+			position: fixed;
+			top: 70px;
+			right: 20px;
+			z-index: 1000;
+			background: rgba(0, 0, 0, 0.8);
+			padding: 10px 15px;
+			border-radius: 4px;
+			font-size: 12px;
+			display: none;
+		}
+
+		.empty-state {
+			text-align: center;
+			margin-top: 120px;
+			color: #bbb;
+		}
+	</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎯 Mafia Tournament Ratings - Player Tracker</h1>
-        </div>
-        
-        <div class="stats-summary">
-            <div class="stat-item">
-                <div class="stat-value">40</div>
-                <div class="stat-label">Players</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value">16</div>
-                <div class="stat-label">Games</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value">6.0</div>
-                <div class="stat-label">Avg Rating</div>
-            </div>
-        </div>
-        
-        <div class="tracked-players-summary">
-            <h3 style="margin: 8px 16px; color: #2980b9; font-size: 14px;">👥 Tracked Players</h3>
-            <div style="padding: 0 16px 8px; display: flex; flex-wrap: wrap; gap: 8px;">
-                <div style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
-                    <strong>#11 Blessed</strong><br>
-                    <span style="color: #27ae60;">7.05pts</span> 
-                    <span style="color: #7f8c8d;">(7/12)</span>
-                </div>
-                <div style="background: #ecf0f1; padding: 4px 8px; border-radius: 4px; font-size: 11px;">
-                    <strong>#12 Грешник</strong><br>
-                    <span style="color: #27ae60;">6.50pts</span> 
-                    <span style="color: #7f8c8d;">(6/12)</span>
-                </div>
-            </div>
-        </div><div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Player</th>
-                        <th>Rating</th>
-                        <th>Wins</th>
-                        <th>Add Pts</th>
-                        <th>CI</th>
-                    </tr>
-                </thead>
-                <tbody>
-        
-                    <tr>
-                        <td><div class="rank top3">1</div></td>
-                        <td class="player-name">DOVOD</td>
-                        <td class="rating">11.515</td>
-                        <td class="wins">9</td>
-                        <td class="points">3.510</td>
-                        <td class="ci-bonus">0.580</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank top3">2</div></td>
-                        <td class="player-name">Maverick</td>
-                        <td class="rating">11.020</td>
-                        <td class="wins">11</td>
-                        <td class="points">2.160</td>
-                        <td class="ci-bonus">0.160</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank top3">3</div></td>
-                        <td class="player-name">Не Злая</td>
-                        <td class="rating">10.780</td>
-                        <td class="wins">9</td>
-                        <td class="points">3.160</td>
-                        <td class="ci-bonus">0.420</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">4</div></td>
-                        <td class="player-name">Берлин</td>
-                        <td class="rating">10.210</td>
-                        <td class="wins">10</td>
-                        <td class="points">2.260</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">5</div></td>
-                        <td class="player-name">aptah</td>
-                        <td class="rating">10.050</td>
-                        <td class="wins">9</td>
-                        <td class="points">2.850</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">6</div></td>
-                        <td class="player-name">Season's</td>
-                        <td class="rating">9.595</td>
-                        <td class="wins">9</td>
-                        <td class="points">2.360</td>
-                        <td class="ci-bonus">0.260</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">7</div></td>
-                        <td class="player-name">Wapi</td>
-                        <td class="rating">8.875</td>
-                        <td class="wins">9</td>
-                        <td class="points">1.900</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">8</div></td>
-                        <td class="player-name">Antonio</td>
-                        <td class="rating">8.865</td>
-                        <td class="wins">8</td>
-                        <td class="points">2.560</td>
-                        <td class="ci-bonus">0.080</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">9</div></td>
-                        <td class="player-name">L</td>
-                        <td class="rating">8.565</td>
-                        <td class="wins">9</td>
-                        <td class="points">1.590</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">10</div></td>
-                        <td class="player-name">Spice</td>
-                        <td class="rating">8.285</td>
-                        <td class="wins">9</td>
-                        <td class="points">1.150</td>
-                        <td class="ci-bonus">0.160</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">11</div></td>
-                        <td class="player-name">Blessed</td>
-                        <td class="rating">7.130</td>
-                        <td class="wins">7</td>
-                        <td class="points">1.800</td>
-                        <td class="ci-bonus">0.080</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">12</div></td>
-                        <td class="player-name">Сью</td>
-                        <td class="rating">6.820</td>
-                        <td class="wins">6</td>
-                        <td class="points">2.000</td>
-                        <td class="ci-bonus">0.320</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">13</div></td>
-                        <td class="player-name">duff</td>
-                        <td class="rating">6.720</td>
-                        <td class="wins">6</td>
-                        <td class="points">1.900</td>
-                        <td class="ci-bonus">0.320</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">14</div></td>
-                        <td class="player-name">Lucifer</td>
-                        <td class="rating">6.610</td>
-                        <td class="wins">7</td>
-                        <td class="points">1.200</td>
-                        <td class="ci-bonus">0.160</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">15</div></td>
-                        <td class="player-name">Грешник</td>
-                        <td class="rating">6.580</td>
-                        <td class="wins">6</td>
-                        <td class="points">2.000</td>
-                        <td class="ci-bonus">0.080</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">16</div></td>
-                        <td class="player-name">Саботаж</td>
-                        <td class="rating">6.400</td>
-                        <td class="wins">6</td>
-                        <td class="points">1.900</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">17</div></td>
-                        <td class="player-name">Blackout</td>
-                        <td class="rating">5.980</td>
-                        <td class="wins">6</td>
-                        <td class="points">1.400</td>
-                        <td class="ci-bonus">0.080</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">18</div></td>
-                        <td class="player-name">Чикаго</td>
-                        <td class="rating">5.920</td>
-                        <td class="wins">5</td>
-                        <td class="points">1.850</td>
-                        <td class="ci-bonus">0.320</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">19</div></td>
-                        <td class="player-name">Призрак</td>
-                        <td class="rating">5.830</td>
-                        <td class="wins">5</td>
-                        <td class="points">2.000</td>
-                        <td class="ci-bonus">0.080</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">20</div></td>
-                        <td class="player-name">qUAest0r</td>
-                        <td class="rating">5.800</td>
-                        <td class="wins">6</td>
-                        <td class="points">1.300</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">21</div></td>
-                        <td class="player-name">S1LveR</td>
-                        <td class="rating">5.650</td>
-                        <td class="wins">6</td>
-                        <td class="points">1.150</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">22</div></td>
-                        <td class="player-name">Миф</td>
-                        <td class="rating">5.630</td>
-                        <td class="wins">5</td>
-                        <td class="points">1.400</td>
-                        <td class="ci-bonus">0.480</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">23</div></td>
-                        <td class="player-name">the Eleventh</td>
-                        <td class="rating">5.600</td>
-                        <td class="wins">6</td>
-                        <td class="points">1.100</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">24</div></td>
-                        <td class="player-name">mobi.</td>
-                        <td class="rating">5.550</td>
-                        <td class="wins">7</td>
-                        <td class="points">0.300</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">25</div></td>
-                        <td class="player-name">Sever</td>
-                        <td class="rating">5.280</td>
-                        <td class="wins">6</td>
-                        <td class="points">0.700</td>
-                        <td class="ci-bonus">0.080</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">26</div></td>
-                        <td class="player-name">Баг</td>
-                        <td class="rating">5.100</td>
-                        <td class="wins">6</td>
-                        <td class="points">0.600</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">27</div></td>
-                        <td class="player-name">Mr. Trust</td>
-                        <td class="rating">5.000</td>
-                        <td class="wins">6</td>
-                        <td class="points">0.500</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">28</div></td>
-                        <td class="player-name">Ru</td>
-                        <td class="rating">4.830</td>
-                        <td class="wins">5</td>
-                        <td class="points">1.000</td>
-                        <td class="ci-bonus">0.080</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">29</div></td>
-                        <td class="player-name">Сергеевна</td>
-                        <td class="rating">4.650</td>
-                        <td class="wins">5</td>
-                        <td class="points">0.900</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">30</div></td>
-                        <td class="player-name">Руанда</td>
-                        <td class="rating">4.450</td>
-                        <td class="wins">5</td>
-                        <td class="points">0.700</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">31</div></td>
-                        <td class="player-name">Sirius</td>
-                        <td class="rating">4.350</td>
-                        <td class="wins">5</td>
-                        <td class="points">0.600</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">32</div></td>
-                        <td class="player-name">Jackson</td>
-                        <td class="rating">3.950</td>
-                        <td class="wins">5</td>
-                        <td class="points">0.200</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">33</div></td>
-                        <td class="player-name">Кайзер</td>
-                        <td class="rating">3.700</td>
-                        <td class="wins">4</td>
-                        <td class="points">0.700</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">34</div></td>
-                        <td class="player-name">Gangster_from_Belgrade</td>
-                        <td class="rating">3.630</td>
-                        <td class="wins">3</td>
-                        <td class="points">1.300</td>
-                        <td class="ci-bonus">0.080</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">35</div></td>
-                        <td class="player-name">Korolevich</td>
-                        <td class="rating">3.430</td>
-                        <td class="wins">3</td>
-                        <td class="points">1.100</td>
-                        <td class="ci-bonus">0.080</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">36</div></td>
-                        <td class="player-name">Джек</td>
-                        <td class="rating">2.180</td>
-                        <td class="wins">2</td>
-                        <td class="points">0.200</td>
-                        <td class="ci-bonus">0.480</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">37</div></td>
-                        <td class="player-name">Сисечкин</td>
-                        <td class="rating">2.150</td>
-                        <td class="wins">3</td>
-                        <td class="points">-0.100</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">38</div></td>
-                        <td class="player-name">Молчун</td>
-                        <td class="rating">1.550</td>
-                        <td class="wins">3</td>
-                        <td class="points">-0.700</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">39</div></td>
-                        <td class="player-name">Windsor-Débauche</td>
-                        <td class="rating">0.850</td>
-                        <td class="wins">1</td>
-                        <td class="points">0.100</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                    <tr>
-                        <td><div class="rank">40</div></td>
-                        <td class="player-name">Синий Игрок</td>
-                        <td class="rating">0.600</td>
-                        <td class="wins">2</td>
-                        <td class="points">-0.900</td>
-                        <td class="ci-bonus">0.000</td>
-                    </tr>
-            
-                </tbody>
-            </table>
-        </div>
-        <div class="footer">
-            <p>Generated on 2025-10-28 16:32:26 | 🤖 Powered by MafTournamentCalculator</p>
-            <p>Rating Formula: Win Points (0.75 × wins) + Additional Points + CI Bonus</p>
-        </div>
-    </div>
+	<div class="controls">
+		<button class="btn btn-primary" onclick="playAllStreams()" id="playBtn">▶ Запустить все стримы</button>
+		<button class="btn" onclick="toggleFullscreen(document.querySelector('.stream-wrapper'))">Полный экран активного</button>
+	</div>
+	<div class="status" id="status"></div>
+
+	<div class="container">
+		<div class="meta">
+			<span>Всего стримов: <strong id="streamCount">8</strong></span>
+			<span>Обновлено: 2025-11-23 14:50</span>
+		</div>
+		<div id="streamsContainer" class="grid"></div>
+		<div class="empty-state" id="emptyState" style="display: none;">
+			Прямые эфиры не найдены.
+		</div>
+	</div>
+
+	<script>
+		const streamData = [{"videoId":"3_RNkdisMJw","title":"Four Seasons: Moldova. Autumn День 2 Стол 1","description":"Four Seasons: Moldova. Autumn День 2 Стол 1 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:04:01Z","thumbnailUrl":"https://i.ytimg.com/vi/3_RNkdisMJw/default_live.jpg","viewCount":"151","url":"https://www.youtube.com/watch?v=3_RNkdisMJw"},{"videoId":"ycAxmDUPelg","title":"Four Seasons: Moldova. Autumn День 2 Стол 3","description":"Four Seasons: Moldova. Autumn День 2 Стол 3 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:05:45Z","thumbnailUrl":"https://i.ytimg.com/vi/ycAxmDUPelg/default_live.jpg","viewCount":"113","url":"https://www.youtube.com/watch?v=ycAxmDUPelg"},{"videoId":"_MCf-WIU6rc","title":"Mafia Champions League 2025 Europe Final. Day 2","description":"Mafia Champions League 2025 Europe Final. Day 2 https://www.instagram.com/mafiamcl/ ...","channelTitle":"MAFGAME","publishedAt":"2025-11-21T16:12:39Z","thumbnailUrl":"https://i.ytimg.com/vi/_MCf-WIU6rc/default_live.jpg","viewCount":"72","url":"https://www.youtube.com/watch?v=_MCf-WIU6rc"},{"videoId":"rlebPAPC31A","title":"Four Seasons: Moldova. Autumn День 2 Стол 4","description":"Four Seasons: Moldova. Autumn День 2 Стол 4 #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:06:56Z","thumbnailUrl":"https://i.ytimg.com/vi/rlebPAPC31A/default_live.jpg","viewCount":"168","url":"https://www.youtube.com/watch?v=rlebPAPC31A"},{"videoId":"rOqY68QonPw","title":"Four Seasons: Moldova. Autumn День 2 Стол 2","description":"Four Seasons: Moldova. Autumn День 2 Стол 2 #mafgame #mafgame #mafia.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:04:54Z","thumbnailUrl":"https://i.ytimg.com/vi/rOqY68QonPw/default_live.jpg","viewCount":"123","url":"https://www.youtube.com/watch?v=rOqY68QonPw"},{"videoId":"NbcnCr9ibmM","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 2","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 2.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:17:00Z","thumbnailUrl":"https://i.ytimg.com/vi/NbcnCr9ibmM/default_live.jpg","viewCount":"91","url":"https://www.youtube.com/watch?v=NbcnCr9ibmM"},{"videoId":"MYneUouB6MU","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 1","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 1.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:16:14Z","thumbnailUrl":"https://i.ytimg.com/vi/MYneUouB6MU/default_live.jpg","viewCount":"83","url":"https://www.youtube.com/watch?v=MYneUouB6MU"},{"videoId":"MTEVy3_bgmI","title":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 3","description":"Four Seasons: Wroclaw Mafia Open 2025 День 2 Стол 3.","channelTitle":"MAFGAME","publishedAt":"2025-11-21T01:17:41Z","thumbnailUrl":"https://i.ytimg.com/vi/MTEVy3_bgmI/default_live.jpg","viewCount":"88","url":"https://www.youtube.com/watch?v=MTEVy3_bgmI"}];
+		const players = [];
+		let playersReady = 0;
+		let allPlayersReady = false;
+		const totalPlayers = streamData.length;
+
+		document.addEventListener('DOMContentLoaded', initPage);
+
+		function initPage() {
+			if (!totalPlayers) {
+				document.getElementById('emptyState').style.display = 'block';
+				document.getElementById('playBtn').style.display = 'none';
+				return;
+			}
+
+			const container = document.getElementById('streamsContainer');
+			streamData.forEach((stream, index) => {
+				const wrapper = document.createElement('div');
+				wrapper.className = 'stream-wrapper';
+
+				const title = document.createElement('div');
+				title.className = 'stream-title';
+				title.textContent = stream.channelTitle + ' — ' + stream.title;
+
+				const streamContainer = document.createElement('div');
+				streamContainer.className = 'stream-container';
+
+				const playerHost = document.createElement('div');
+				playerHost.id = 'player' + (index + 1);
+
+				streamContainer.appendChild(playerHost);
+				wrapper.appendChild(title);
+				wrapper.appendChild(streamContainer);
+				container.appendChild(wrapper);
+			});
+		}
+
+		function onYouTubeIframeAPIReady() {
+			if (!totalPlayers) {
+				return;
+			}
+			showStatus('Инициализация проигрывателей...');
+
+			streamData.forEach((stream, index) => {
+				players[index] = new YT.Player('player' + (index + 1), {
+					videoId: stream.videoId,
+					playerVars: {
+						'autoplay': 1,
+						'mute': 1,
+						'controls': 1,
+						'rel': 0,
+						'modestbranding': 1,
+						'playsinline': 1,
+						'enablejsapi': 1,
+						'origin': window.location.origin
+					},
+					events: {
+						'onReady': onPlayerReady,
+						'onStateChange': onPlayerStateChange
+					}
+				});
+			});
+		}
+
+		function onPlayerReady() {
+			playersReady++;
+			showStatus('Готово проигрывателей: ' + playersReady + '/' + totalPlayers);
+
+			if (playersReady === totalPlayers) {
+				allPlayersReady = true;
+				showStatus('Все проигрыватели готовы!');
+				setTimeout(tryAutoPlay, 1000);
+			}
+		}
+
+		function tryAutoPlay() {
+			if (!allPlayersReady) {
+				return;
+			}
+
+			let started = 0;
+			let maxDelay = 0;
+
+			players.forEach((player, index) => {
+				const delay = Math.floor(Math.random() * 4000) + 1000;
+				maxDelay = Math.max(maxDelay, delay);
+
+				setTimeout(() => {
+					try {
+						if (player && typeof player.playVideo === 'function') {
+							player.playVideo();
+							started++;
+							showStatus('Запускается стрим ' + (index + 1) + '... (' + started + '/' + totalPlayers + ')');
+						}
+					} catch (e) {
+						console.log('Не удалось запустить стрим ' + (index + 1) + ':', e);
+					}
+				}, delay);
+			});
+
+			setTimeout(() => {
+				if (started > 0) {
+					showStatus('Запущено стримов: ' + started + '/' + totalPlayers);
+					unmuteAll();
+				} else {
+					showStatus('Автозапуск заблокирован. Нажмите кнопку "Запустить все стримы"');
+				}
+			}, maxDelay + 2000);
+		}
+
+		function unmuteAll() {
+			players.forEach((player, index) => {
+				try {
+					if (player && typeof player.unMute === 'function') {
+						player.unMute();
+					}
+				} catch (e) {
+					console.log('Не удалось включить звук на стриме ' + (index + 1) + ':', e);
+				}
+			});
+			showStatus('Звук включен');
+			setTimeout(hideStatus, 2000);
+		}
+
+		function playAllStreams() {
+			if (!allPlayersReady) {
+				showStatus('Проигрыватели еще не готовы. Подождите...');
+				return;
+			}
+
+			showStatus('Запуск всех стримов...');
+
+			let started = 0;
+			let maxDelay = 0;
+
+			players.forEach((player, index) => {
+				const delay = Math.floor(Math.random() * 4000) + 1000;
+				maxDelay = Math.max(maxDelay, delay);
+
+				setTimeout(() => {
+					try {
+						if (player && typeof player.playVideo === 'function') {
+							player.playVideo();
+							started++;
+							showStatus('Запускается стрим ' + (index + 1) + '... (' + started + '/' + totalPlayers + ')');
+						}
+					} catch (e) {
+						console.log('Не удалось запустить стрим ' + (index + 1) + ':', e);
+					}
+				}, delay);
+			});
+
+			setTimeout(() => {
+				if (started > 0) {
+					showStatus('Запущено стримов: ' + started + '/' + totalPlayers);
+					unmuteAll();
+				}
+			}, maxDelay + 2000);
+
+			const playBtn = document.getElementById('playBtn');
+			if (playBtn) {
+				playBtn.style.display = 'none';
+			}
+		}
+
+		function onPlayerStateChange(event) {
+			if (event.data === YT.PlayerState.PLAYING) {
+				console.log('Стрим воспроизводится');
+			}
+		}
+
+		function showStatus(message) {
+			const status = document.getElementById('status');
+			if (status) {
+				status.textContent = message;
+				status.style.display = 'block';
+			}
+		}
+
+		function hideStatus() {
+			const status = document.getElementById('status');
+			if (status) {
+				status.style.display = 'none';
+			}
+		}
+
+		let userInteracted = false;
+		document.addEventListener('click', () => {
+			if (!userInteracted && allPlayersReady) {
+				userInteracted = true;
+				setTimeout(tryAutoPlay, 100);
+			}
+		}, { once: true });
+
+		function toggleFullscreen(element) {
+			if (!element) {
+				return;
+			}
+
+			if (!document.fullscreenElement) {
+				element.requestFullscreen().catch(err => {
+					alert('Ошибка при переходе в полноэкранный режим: ' + err.message);
+				});
+			} else {
+				document.exitFullscreen();
+			}
+		}
+
+		document.addEventListener('fullscreenchange', () => {
+			if (!document.fullscreenElement) {
+				showStatus('Полноэкранный режим выключен');
+				setTimeout(hideStatus, 1500);
+			}
+		});
+	</script>
+	<script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
-        
